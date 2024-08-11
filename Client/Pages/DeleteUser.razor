@@ -36,7 +36,7 @@
         user = await _httpClient.GetFromJsonAsync<UserModel>("https://localhost:7168/Users/" + Id);
    }
     protected async Task Delete()
-    {
+    {//add comment
         var response = await _httpClient.DeleteAsync("https://localhost:7168/Users?id=" + Id);
         // bool deleteResponse = await response.Content.ReadFromJsonAsync<bool>();
         // if (deleteResponse)
