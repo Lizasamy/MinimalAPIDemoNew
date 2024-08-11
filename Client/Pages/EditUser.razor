@@ -1,0 +1,54 @@
+﻿
+@page "/edituser/{Id}"
+@using Client.Models
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@inject HttpClient _httpClient
+
+<h3>Edit User</h3>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="FirstName">First Name</label>
+            <input form="FirstName" class="form-control" @bind="@user.FirstName" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="LastName">Last Name</label>
+            <input form="LastName" class="form-control" @bind="@user.LastName" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <input type="button" class="btn btn-primary" @onclick="@Save" value="Save" />
+            <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string Id{ get; set; }
+    UserModel user = new UserModel();
+    protected override async Task OnInitializedAsync()
+    {
+        user = await _httpClient.GetFromJsonAsync<UserModel>("https://localhost:7168/Users/"+Id);
+    }
+    protected async Task Save()
+    {
+        var response = await _httpClient.PutAsJsonAsync("https://localhost:7168/Users/"+Id,user);
+        // bool userResponse = await response.Content.ReadFromJsonAsync<bool>();
+        // if (personResponse)
+        // {
+            await JsRuntime.InvokeVoidAsync("alert", "Updated Successfully!");
+            NavigationManager.NavigateTo("Userlist");
+        // }
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Userlist");
+    }
+
+}
